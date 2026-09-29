@@ -64,7 +64,7 @@ export function HabitCard({ habit, ticks }: { habit: Habit; ticks: HabitTick[] }
             checked={doneToday}
             onCheckedChange={handleToggle}
             aria-label={`Mark ${habit.name} as done for today`}
-            className="h-6 w-6"
+            className="h-8 w-8 shrink-0"
           />
           <div className="min-w-0">
             <Label
