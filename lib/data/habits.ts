@@ -54,12 +54,15 @@ export async function deleteHabit(habitId: string): Promise<void> {
 /**
  * Tick a habit for a calendar date, or un-tick it if it is already ticked.
  *
- * The write is keyed by `<habitId>:<date>`, so a habit can only ever have one row per day.
+ * The write is keyed by `<habitId>:<date>`, so a habit can only ever have one row per day. The
+ * read and the write share one transaction, so a second click that lands before the first one's
+ * write has landed sees the new state instead of re-applying against a stale read.
  */
 export async function toggleTick(habitId: string, date: string): Promise<void> {
-  const table = await ticks();
+  const db = await database.ready();
   const id = tickId(habitId, date);
-  const existing = await table.get(id);
-  if (existing) await table.delete(id);
-  else await table.put({ id, habitId, date });
+  await db.transaction("rw", db.ticks, async () => {
+    if (await db.ticks.get(id)) await db.ticks.delete(id);
+    else await db.ticks.put({ id, habitId, date });
+  });
 }
