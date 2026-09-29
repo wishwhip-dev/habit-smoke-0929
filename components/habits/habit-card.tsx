@@ -33,11 +33,11 @@ export function HabitCard({ habit, ticks }: { habit: Habit; ticks: HabitTick[] }
   const doneToday = ticked.has(today);
   const doneThisWeek = dates.filter((date) => ticked.has(date)).length;
 
-  async function handleToggle(done: boolean | string) {
-    // Optimistic change is not needed: the live query re-runs the moment the write lands.
+  async function handleToggle() {
+    // No optimistic change: the live query re-runs the moment the write lands.
     try {
       await toggleTick(habit.id, today);
-      if (done !== undefined) setError(null);
+      setError(null);
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : "Could not save the tick. Try again.");
     }
@@ -62,8 +62,7 @@ export function HabitCard({ habit, ticks }: { habit: Habit; ticks: HabitTick[] }
           <Checkbox
             id={`done-${habit.id}`}
             checked={doneToday}
-            onCheckedChange={handleToggle}
-            aria-label={`Mark ${habit.name} as done for today`}
+            onCheckedChange={handleToggle}            aria-label={`Mark ${habit.name} as done for today`}
             className="h-6 w-6"
           />
           <div className="min-w-0">
