@@ -62,7 +62,8 @@ export function HabitCard({ habit, ticks }: { habit: Habit; ticks: HabitTick[] }
           <Checkbox
             id={`done-${habit.id}`}
             checked={doneToday}
-            onCheckedChange={handleToggle}            aria-label={`Mark ${habit.name} as done for today`}
+            onCheckedChange={handleToggle}
+            aria-label={`Mark ${habit.name} as done for today`}
             className="h-6 w-6"
           />
           <div className="min-w-0">

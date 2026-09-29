@@ -57,8 +57,8 @@ export function AddHabitForm({ className }: { className?: string }) {
             }}
           />
         </div>
-        <Button type="submit" disabled={submitting} className="h-10 sm:w-24">
-          {submitting ? "Adding…" : "Add"}
+        <Button type="submit" disabled={submitting} className="h-10 w-full sm:w-auto sm:px-8">
+          {submitting ? "Adding…" : "Add habit"}
         </Button>
       </div>
       {error ? (
