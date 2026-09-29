@@ -16,29 +16,30 @@ export async function listTicks(): Promise<HabitTick[]> {
   return (await ticks()).toArray();
 }
 
-/** Which dates a habit is ticked on, as a Set of `YYYY-MM-DD` keys. */
-export async function tickedDates(habitId: string): Promise<Set<string>> {
-  const rows = await (await ticks()).where("habitId").equals(habitId).toArray();
-  return new Set(rows.map((row) => row.date));
-}
-
 export type AddHabitResult = { ok: true; habit: Habit } | { ok: false; error: string };
 
-/** Add a habit. Rejects an empty name and a name that already exists, case-insensitively. */
+/**
+ * Add a habit. Rejects an empty name and a name that already exists, case-insensitively.
+ *
+ * The duplicate check and the insert share one transaction, so two tabs adding the same name at
+ * the same moment cannot both slip past the check.
+ */
 export async function addHabit(rawName: string): Promise<AddHabitResult> {
   const name = rawName.trim();
   if (!name) return { ok: false, error: "Give the habit a name." };
 
-  const table = await habits();
-  const existing = await table.toArray();
-  const duplicate = existing.find((habit) => habit.name.toLowerCase() === name.toLowerCase());
-  if (duplicate) {
-    return { ok: false, error: `A habit named \u201C${duplicate.name}\u201D already exists.` };
-  }
+  const db = await database.ready();
+  return db.transaction("rw", db.habits, async (): Promise<AddHabitResult> => {
+    const existing = await db.habits.toArray();
+    const duplicate = existing.find((habit) => habit.name.toLowerCase() === name.toLowerCase());
+    if (duplicate) {
+      return { ok: false, error: `A habit named \u201C${duplicate.name}\u201D already exists.` };
+    }
 
-  const habit: Habit = { id: newId(), name, createdAt: Date.now() };
-  await table.add(habit);
-  return { ok: true, habit };
+    const habit: Habit = { id: newId(), name, createdAt: Date.now() };
+    await db.habits.add(habit);
+    return { ok: true, habit };
+  });
 }
 
 /** Delete a habit and every tick of it, in one transaction. Other habits are untouched. */
