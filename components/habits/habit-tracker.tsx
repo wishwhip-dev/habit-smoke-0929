@@ -106,7 +106,8 @@ export function HabitTracker() {
         ) : null}
         {state.kind === "imported" ? (
           <p role="status" className="w-full text-sm text-muted-foreground">
-            Import finished: {state.result.added} added, {state.result.updated} updated.
+            Import finished: {state.result.rows}{" "}
+            {state.result.rows === 1 ? "row" : "rows"} restored.
           </p>
         ) : null}
       </div>
