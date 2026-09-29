@@ -1,0 +1,12 @@
+# Plan
+
+Goal: A habit tracker. I can add a habit, tick it off for today, and see a small chart of the last 7 days for each habit. My habits and ticks are still there when I come back tomorrow.
+
+1. The home page shows a visible 'Add habit' button that opens a form with a labelled habit-name input and an 'Add' submit button; submitting a name (e.g. 'Drink water') immediately adds that habit to the page, and this works directly on the home page with no navigation, sign-in or URL parameters. Submitting with an empty name shows an inline error and adds nothing, and submitting a name that already exists is rejected with a visible message rather than creating a duplicate.
+2. A user can add many habits — ten or more — and all of them render as separate rows or cards on the page without truncation or errors. With no habits yet, the page shows a clear empty-state message (e.g. 'No habits yet') with the 'Add habit' button still visible.
+3. Each habit row or card has a checkbox or button for ticking it off today; clicking it visibly marks today as done (the control and today's chart cell both reflect it), and clicking again un-marks it. Ticks are recorded per calendar date, so a tick made yesterday still fills yesterday's column the next day, and today's column starts empty each new day.
+4. Every habit shows a chart of the last 7 days — seven labelled cells or bars (weekday names or dates), one per day, filled for days with a tick and empty for days without, with today's column visually distinguished (e.g. highlighted or outlined) so it is obvious which day is which. A brand-new habit shows all seven days empty without errors.
+5. The added habits and every day's tick are saved to the Dexie database, so after reloading the page all habits, their order, and their tick marks for past days are still shown exactly as they were left.
+6. A habit can be deleted with a control labelled 'Delete' that asks for confirmation first; confirming removes it and its chart while the other habits and their ticks are untouched, and cancelling keeps the habit. On a phone-sized screen the habits stack vertically, the 7-day chart fits the viewport without horizontal scrolling, and the 'Add habit' button remains reachable.
+
+These are the outcomes this task is judged against.
